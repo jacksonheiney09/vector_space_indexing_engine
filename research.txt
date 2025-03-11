@@ -1,0 +1,108 @@
+Overview
+
+    - Two Components
+        - Term Space
+            - A collection of every unique word that appears in a set of documents
+        - Term Counts
+            - A record of how many times each term occurs in a single document
+            - Often represented as a table
+
+    - Create a vector for each document
+        - Term Space -> Coordinate Space
+        - Term Counts -> Coordinates
+
+    - Term Space with 3 unique terms
+        - X, Y, Z axis -> term1, term2, term3 axis
+            - Dimensions
+        - By plotting the coordinates along each dimension, we will have a point in
+        the term space for each document.
+            - Create a vector from the origin to this point
+        - Calculate the magnitude of each vector
+            - Compare documents by calculating the cosign of the angle between them
+                - Identical documents = cosign of 1
+                - Similar documents = Positive decimal cosign
+                - Different documents = cosign of 0
+
+A Simple Example
+
+    - 3 Documents, each only containing the words, cat, dog, and mouse.
+        - Cat, dog, and mouse are the term space
+        - Each document has coordinates along the cat, dog, and mouse 
+          dimensions
+        
+        Document 1      Document 2      Document 3
+cat         3               1               2
+dog         1               2               3
+mouse       4               5               0
+
+    - Vectors (cat-dog-mouse)
+        - Document 1 = (3, 1, 4)
+        - Document 2 = (1, 2, 5)
+        - Document 3 = (2, 3, 0)
+    - Magnitude Formula
+        - a^2 + b^2 + c^2 = d^2
+    - Magnitudes
+        - Document 1 = sqrt(3^2 + 1^2 + 4^2) = 5.099
+        - Document 2 = sqrt(1^2 + 2^2 + 5^2) = 5.477
+        - Document 3 = sqrt(2^2 + 3^2 + 0^2) = 3.873
+
+    - Documents can have the same vector magnitude
+        - (1, 2, 3) and (3, 2, 1) would have the same magnitude of 3.7417
+        - This is fine, the relevancy scores of documents are based on the
+        dimensionality of the query term
+
+Querying
+
+    - Project our query vector into the vector space
+        - Calculate the cosign of the angle between the query vector and
+        each document's vector
+        - If query is "mouse", the "cat-dog-mouse vector" of this query
+          would be (0, 0, 1) with a magnitude of 1
+    - To calculate the cosign
+        - Dot product of the query and document vector divided by the
+          magnitudes multiplied together
+        - (Q * V) / (||Q|| * ||V||)
+        - Example
+            - Query Vector = (0, 0, 1)
+            - Document 1 Vector = (3, 1, 4)
+            - Dot Product = (0 * 3) + (0 * 1) + (1 * 4) = 4
+            - Magnitude Multiplication = 1 * 5.099 = 5.09901
+            - Divide Dot Product by Magnitude = 4/5.099 = 0.784
+            - Document 2 = 0.913
+            - Document 3 = 0.000
+            - We see that document 2 is the most relevant, highest cosign
+            - Document 3 is completely irrelevant, because of no mentions
+              of mouse
+
+Collection Indexing Process
+
+    - Custom Parsers
+        - Indexing a website
+            - Strip HTML & Formatting
+                - Contains no semantic content
+            - Remove Stop words
+                - "the", "and", "of", "or"
+                - Adverbs
+                - All contain no semantic content
+            - Stem terms
+                - "runner", "running", and "runs" = "run"
+                - Porter Stemming Algorithm
+                - Reduces term space while maintaining semantic content
+            - Create Collection Index
+                - Create term space
+                - Create document term counts
+                - Calculate document vector magnitudes
+
+- Vector Space Search Engine Limitations
+
+    - Extremely calculation intensive
+        - Slow
+        - Requires lots of processor times
+
+    - Dynamic collections require re-Indexing
+        - Each time a new document is introduced, each new term would be
+          a new dimension in the matrix, and all documents must be re-indexed
+
+    - Latent Semantic Indexing
+    
+
